@@ -60,9 +60,9 @@ async function run() {
       const email = req.query.email;
       const query = {};
       if (email) {
-        if (email !== req.token_email) {
-          return res.status(403).send({ message: "forbidden access" });
-        }
+        // if (email !== req.token_email) {
+        //   return res.status(403).send({ message: "forbidden access" });
+        // }
         query.email = email;
       }
       const cursor = jobsCollection.find(query);
@@ -109,13 +109,13 @@ async function run() {
     });
     app.get("/applications", async (req, res) => {
       const email = req.query.email;
-      const query = {};
 
       if (email) {
-        query.email = email;
+        const cursor = applicationsCollection.find({ "userInfo.email": email });
+        const result = await cursor.toArray();
+        return res.send(result);
       }
-
-      const cursor = applicationsCollection.find(query);
+      const cursor = applicationsCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
